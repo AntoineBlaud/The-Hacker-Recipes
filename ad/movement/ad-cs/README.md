@@ -29,6 +29,7 @@ In [their research papers](https://posts.specterops.io/certified-pre-owned-d9591
 > * **Certificate Template** — a collection of settings and policies that defines the contents of a certificate issued by an enterprise CA
 > * **CSR** (Certificate Signing Request) — a message sent to a CA to request a signed certificate
 > * **EKU** (Extended/Enhanced Key Usage) — one or more object identifiers (OIDs) that define how a certificate can be used
+> * CEP/CES `` Certificate Enrollment Policy Web Service (CEP) and Certificate Enrollment Web Service (CES)
 >
 > ([specterops.io](https://posts.specterops.io/certified-pre-owned-d95910965cd2))
 
@@ -86,8 +87,6 @@ From UNIX-like systems, the [Certipy](https://github.com/ly4k/Certipy) (Python) 
 ```bash
 certipy 'domain.local'/'user':'password'@'domaincontroller' find
 ```
-
-
 
 {% hint style="info" %}
 By default, Certipy uses LDAPS, which is not always supported by the domain controllers. The `-scheme` flag can be used to set whether to use LDAP or LDAPS.
