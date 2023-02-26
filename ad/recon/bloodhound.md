@@ -17,7 +17,7 @@ SharpHound ([sources](https://github.com/BloodHoundAD/SharpHound), [builds](http
 It must be run from the context of a domain user, either directly through a logon or through another method such as runas (`runas /netonly /user:$DOMAIN\$USER`) (see [Impersonation](../movement/credentials/impersonation.md)). Alternatively, SharpHound can be used with the `LdapUsername` and `LdapPassword` flags for that matter.
 
 ```bash
-SharpHound.exe --collectionmethod All
+SharpHound.exe --collectionmethods All
 ```
 
 {% hint style="info" %}
@@ -28,11 +28,11 @@ The previous commands are basic but some options (i.e. Stealth and Loop) can be 
 
 ```bash
 # Perform stealth collection methods
-SharpHound.exe --collectionmethod All --Stealth
+SharpHound.exe --collectionmethods All --Stealth
 
 # Loop collections (especially useful for session collection)
 # e.g. collect sessions every 10 minutes for 3 hours
-SharpHound.exe --collectionmethod Session --Loop --loopduration 03:00:00 --loopinterval 00:10:00
+SharpHound.exe --collectionmethods Session --Loop --loopduration 03:00:00 --loopinterval 00:10:00
 
 # Use LDAPS instead of plaintext LDAP
 SharpHound.exe --secureldap
@@ -60,12 +60,18 @@ bloodhound.py --zip -c All -d $DOMAIN -u $USERNAME -p $PASSWORD -dc $DOMAIN_CONT
 {% hint style="info" %}
 This ingestor is not as powerful as the C# one. It mostly misses GPO collection methods **but** a good news is that it can do pass-the-hash. It becomes really useful when compromising a domain account's NT hash.
 {% endhint %}
+
+An alternative called [RustHound](https://github.com/OPENCYBER-FR/RustHound) (Rust) can be used as well.
+
+```bash
+rusthound --zip -d "$DOMAIN" -i "$DC_IP" -u '$USER@$DOMAIN' -p '$PASSWORD' -o "OUTDIR"
+```
 {% endtab %}
 {% endtabs %}
 
 ### Analysis
 
-Once the collection is over, the data can be uploaded and analysed in BloodHound by doing the following.
+Once the collection is over, the data can be uploaded and analyzed in BloodHound by doing the following.
 
 * Find paths between specified nodes
 * Run pre-built analytics queries to find common attack paths
@@ -74,13 +80,17 @@ Once the collection is over, the data can be uploaded and analysed in BloodHound
 * Mark nodes as high value targets for easier path finding
 * Mark nodes as owned for easier path finding
 * Find information about selected nodes: sessions, properties, group membership/members, local admin rights, Kerberos delegations, RDP rights, outbound/inbound control rights (ACEs), and so on
-* Find help about edges/attacks (abuse, opsec considerations, references)
+* Find help about edges/attacks (abuse, OPSEC considerations, references)
 
-Using BloodHound can help find attack paths and abuses like [ACEs abuse](../movement/dacl/), [Kerberos delegations abuse](../movement/kerberos/delegations/), [credential dumping](../movement/credentials/dumping/) and [credential shuffling](../movement/credentials/credential-shuffling.md), [GPOs abuse](../movement/group-policies.md), [Kerberoast](../movement/kerberos/kerberoast.md), [ASREProast](../movement/kerberos/asreproast.md), [domain trusts attacks](../movement/domain-trusts.md), etc.
+Using BloodHound can help find attack paths and abuses like [ACEs abuse](../movement/dacl/), [Kerberos delegations abuse](../movement/kerberos/delegations/), [credential dumping](../movement/credentials/dumping/) and [credential shuffling](../movement/credentials/credential-shuffling.md), [GPOs abuse](../movement/group-policies.md), [Kerberoast](../movement/kerberos/kerberoast.md), [ASREProast](../movement/kerberos/asreproast.md), [domain trusts attacks](../movement/trusts.md), etc.
 
 ![](<../../.gitbook/assets/Screenshot from 2020-12-08 15-29-30.png>)
 
 For detailed and official documentation on the analysis process, testers can check the following resources: [the BloodHound GUI](https://bloodhound.readthedocs.io/en/latest/data-analysis/bloodhound-gui.html), [nodes](https://bloodhound.readthedocs.io/en/latest/data-analysis/nodes.html) and [edges](https://bloodhound.readthedocs.io/en/latest/data-analysis/edges.html).
+
+{% hint style="success" %}
+Some custom queries can be used to go even further with the analysis of attack paths, such as [Exegol's custom queries](https://github.com/ThePorgs/Exegol-images/blob/3d6d7a41e46acb6898da996c4198971be02e4d77/sources/bloodhound/customqueries.json).
+{% endhint %}
 
 {% hint style="success" %}
 Here are some examples of quick wins to spot with BloodHound
@@ -98,7 +108,7 @@ bhqc.py -u $neo4juser -p $neo4jpassword
 {% endhint %}
 
 {% hint style="success" %}
-[CrackHound](https://github.com/trustedsec/CrackHound) (Python) can be used to populate BloodHound's database with password obtained during a pentest. This can help sort and report attack paths.&#x20;
+[CrackHound](https://github.com/trustedsec/CrackHound) (Python) can be used to populate BloodHound's database with password obtained during a pentest. This can help sort and report attack paths.
 {% endhint %}
 
 ## Resources
@@ -110,4 +120,3 @@ bhqc.py -u $neo4juser -p $neo4jpassword
 {% embed url="https://bloodhound.readthedocs.io/en/latest/" %}
 
 {% embed url="https://porterhau5.com/blog/extending-bloodhound-track-and-visualize-your-compromise/" %}
-

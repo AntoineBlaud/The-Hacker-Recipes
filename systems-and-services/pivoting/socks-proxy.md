@@ -10,7 +10,7 @@ In short, a SOCKS proxy can relay TCP and UDP connections and hence help bypass 
 
 ## Practice
 
-There are two types of dynamic port forwarding used during penetration testing engagments.
+There are two types of dynamic port forwarding used during penetration testing engagements.
 
 * **Dynamic port forwarding**: tunnel the whole attacker's network traffic (instead of only one port) through a remote machine.
 * **Reverse dynamic port forwarding**: tunnel the whole network traffic from a remote machine through the attacker's machine.
@@ -59,11 +59,20 @@ chisel client $ATTACKER_MACHINE_IP:$ATTACKER_MACHINE_PORT R:socks
 {% endtab %}
 
 {% tab title="Metasploit" %}
-A meterpreter session can be taken advantage of by setting up a sock proxy with the appropriate module.
+A meterpreter session can be taken advantage of by setting up a SOCKS proxy with the appropriate module.
+
+The first steps consists in creating a route, from a meterpreter shell to the target
 
 ```bash
-msf > use auxiliary/server/socks4a
+meterpreter > run autoroute -s 10.11.1.0/24
+```
+
+The session can then be put in background and, the SOCKS server can be created.
+
+```bash
+msf > use auxiliary/server/socks_proxy
 msf > set SRVPORT $PORT
+msf > set VERSION 4a
 msf > run
 ```
 {% endtab %}
